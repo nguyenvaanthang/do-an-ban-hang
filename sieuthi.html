@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Siêu thị Văn Thắng</title>
+    <link rel="stylesheet" href="sieuthi.css">
+</head>
+
+<body>
+
+<!-- ===== ĐĂNG KÝ ===== -->
+<div id="registerPage">
+    <h2>Đăng ký nhân viên</h2>
+
+    <input type="text" id="inviteCode" placeholder="Mã được cấp"><br>
+    <input type="text" id="regName" placeholder="Tên nhân viên"><br>
+    <input type="text" id="regPhone" placeholder="SĐT"><br>
+    <input type="date" id="regBirth"><br>
+
+    <button onclick="register()">Đăng ký</button>
+    <p onclick="showLogin()">Đã có tài khoản? Đăng nhập</p>
+</div>
+
+<!-- ===== ĐĂNG NHẬP ===== -->
+<div id="loginPage" style="display:none;">
+    <h2>Đăng nhập</h2>
+
+    <input type="text" id="loginName" placeholder="Tên nhân viên"><br>
+    <input type="text" id="loginId" placeholder="Mã nhân viên"><br>
+
+    <button onclick="login()">Đăng nhập</button>
+    <p onclick="showRegister()">Chưa có tài khoản? Đăng ký</p>
+</div>
+
+<!-- ===== HỆ THỐNG BÁN HÀNG ===== -->
+<div id="mainApp" style="display:none;">
+
+    <h1>SIÊU THỊ THƯƠNG MẠI 1 THÀNH VIÊN VĂN THẮNG</h1>
+
+    <p id="time"></p>
+
+    <div style="display:flex; gap:20px">
+
+        <!-- QUÉT -->
+        <div>
+            <h3>Quét mã</h3>
+            <video id="video" width="300" autoplay></video><br>
+
+            <input type="text" id="barcode" placeholder="Nhập mã">
+            <button onclick="scanProduct()">Thêm</button>
+        </div>
+
+        <!-- HÓA ĐƠN -->
+        <div>
+            <h3>HÓA ĐƠN</h3>
+
+            <table id="bill" border="1">
+                <thead>
+                    <tr>
+                        <th>Tên</th>
+                        <th>Giá</th>
+                        <th>SL</th>
+                        <th>Tổng</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <p id="staff"></p>
+
+            <h2 id="total">Tổng tiền: 0 VNĐ</h2>
+
+            <button onclick="pay()">Thanh toán</button>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script src="https://unpkg.com/@zxing/library@latest"></script>
+<script src="script.js"></script>
+
+</body>
+
+</html>
