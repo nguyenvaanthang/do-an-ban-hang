@@ -2,84 +2,536 @@
 <html lang="vi">
 
 <head>
+
     <meta charset="UTF-8">
-    <title>Siêu thị Văn Thắng</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SIÊU THỊ VĂN THẮNG</title>
+
     <link rel="stylesheet" href="sieuthi.css">
+
 </head>
 
 <body>
 
-<!-- ===== ĐĂNG KÝ ===== -->
-<div id="registerPage">
-    <h2>Đăng ký nhân viên</h2>
+<!-- ===================== ĐĂNG KÝ ===================== -->
 
-    <input type="text" id="inviteCode" placeholder="Mã được cấp"><br>
-    <input type="text" id="regName" placeholder="Tên nhân viên"><br>
-    <input type="text" id="regPhone" placeholder="SĐT"><br>
-    <input type="date" id="regBirth"><br>
-
-    <button onclick="register()">Đăng ký</button>
-    <p onclick="showLogin()">Đã có tài khoản? Đăng nhập</p>
-</div>
-
-<!-- ===== ĐĂNG NHẬP ===== -->
-<div id="loginPage" style="display:none;">
-    <h2>Đăng nhập</h2>
-
-    <input type="text" id="loginName" placeholder="Tên nhân viên"><br>
-    <input type="text" id="loginId" placeholder="Mã nhân viên"><br>
-
-    <button onclick="login()">Đăng nhập</button>
-    <p onclick="showRegister()">Chưa có tài khoản? Đăng ký</p>
-</div>
-
-<!-- ===== HỆ THỐNG BÁN HÀNG ===== -->
-<div id="mainApp" style="display:none;">
+<div id="registerPage" class="form-box">
 
     <h1>SIÊU THỊ THƯƠNG MẠI 1 THÀNH VIÊN VĂN THẮNG</h1>
 
-    <p id="time"></p>
+    <h2>ĐĂNG KÝ NHÂN VIÊN</h2>
 
-    <div style="display:flex; gap:20px">
+    <input
+        type="text"
+        id="inviteCode"
+        placeholder="Nhập mã được cấp">
 
-        <!-- QUÉT -->
-        <div>
-            <h3>Quét mã</h3>
-            <video id="video" width="300" autoplay></video><br>
+    <input
+        type="text"
+        id="regName"
+        placeholder="Họ và tên">
 
-            <input type="text" id="barcode" placeholder="Nhập mã">
-            <button onclick="scanProduct()">Thêm</button>
-        </div>
+    <input
+        type="text"
+        id="regPhone"
+        placeholder="Số điện thoại">
 
-        <!-- HÓA ĐƠN -->
-        <div>
-            <h3>HÓA ĐƠN</h3>
+    <input
+        type="date"
+        id="regBirth">
 
-            <table id="bill" border="1">
-                <thead>
-                    <tr>
-                        <th>Tên</th>
-                        <th>Giá</th>
-                        <th>SL</th>
-                        <th>Tổng</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+    <button onclick="register()">
+        Đăng ký
+    </button>
 
-            <p id="staff"></p>
-
-            <h2 id="total">Tổng tiền: 0 VNĐ</h2>
-
-            <button onclick="pay()">Thanh toán</button>
-        </div>
-
-    </div>
+    <p onclick="showLogin()">
+        Đã có tài khoản? Đăng nhập
+    </p>
 
 </div>
 
-<!-- SCRIPT -->
+<!-- ===================== ĐĂNG NHẬP ===================== -->
+
+<div
+id="loginPage"
+class="form-box"
+style="display:none;">
+
+<h1>SIÊU THỊ VĂN THẮNG</h1>
+
+<h2>ĐĂNG NHẬP</h2>
+
+<input
+type="text"
+id="loginName"
+placeholder="Tên nhân viên">
+
+<input
+type="text"
+id="loginId"
+placeholder="Mã nhân viên">
+
+<button onclick="login()">
+Đăng nhập
+</button>
+
+<p onclick="showRegister()">
+Quay lại đăng ký
+</p>
+
+</div>
+
+<!-- ===================== PHẦN MỀM ===================== -->
+
+<div
+id="mainApp"
+style="display:none;">
+
+<!-- Banner -->
+
+<div class="banner">
+
+<h1>
+
+SIÊU THỊ THƯƠNG MẠI
+1 THÀNH VIÊN
+VĂN THẮNG
+
+</h1>
+
+<p id="time"></p>
+
+</div>
+
+<!-- Menu -->
+
+<div class="menu">
+
+<button
+onclick="showSection('dashboard')">
+
+Trang chủ
+
+</button>
+
+<button
+onclick="showSection('banhang')">
+
+Bán hàng
+
+</button>
+
+<button
+onclick="showSection('khohang')">
+
+Kho hàng
+
+</button>
+
+<button
+onclick="showSection('nhanvien')">
+
+Nhân viên
+
+</button>
+
+<button
+onclick="showSection('thongke')">
+
+Thống kê
+
+</button>
+
+<button
+onclick="logout()">
+
+Đăng xuất
+
+</button>
+
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+
+<div
+id="dashboard"
+class="section">
+
+<div class="dashboard">
+
+<div class="card">
+
+<h2>Tổng sản phẩm</h2>
+
+<h1 id="tongSanPham">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h2>Tổng nhân viên</h2>
+
+<h1 id="tongNhanVien">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h2>Doanh thu</h2>
+
+<h1 id="doanhThu">
+0 VNĐ
+</h1>
+
+</div>
+
+<div class="card">
+
+<h2>Hóa đơn</h2>
+
+<h1 id="hoaDon">
+0
+</h1>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= BÁN HÀNG ================= -->
+
+<div
+id="banhang"
+class="section"
+style="display:none;">
+
+<div class="container">
+
+<div class="left">
+
+<h2>QUÉT MÃ SẢN PHẨM</h2>
+
+<video
+id="video"
+autoplay>
+
+</video>
+
+<input
+type="text"
+id="barcode"
+placeholder="Nhập mã sản phẩm">
+
+<button
+onclick="scanProduct()">
+
+Thêm sản phẩm
+
+</button>
+
+</div>
+
+<div class="right">
+
+<h2>HÓA ĐƠN</h2>
+
+<div class="search-box">
+
+<input
+type="text"
+id="search"
+placeholder="Tìm sản phẩm">
+
+<button
+onclick="searchProduct()">
+
+Tìm
+
+</button>
+
+</div>
+
+<div id="searchResult"></div>
+
+<table id="bill">
+
+<thead>
+
+<tr>
+
+<th>Tên</th>
+
+<th>Đơn giá</th>
+
+<th>Số lượng</th>
+
+<th>Thành tiền</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+<p id="staff"></p>
+
+<h2 id="total">
+
+Tổng tiền:
+0 VNĐ
+
+</h2>
+
+<button
+onclick="pay()">
+
+Thanh toán
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+<!-- ================= QUẢN LÝ KHO ================= -->
+
+<div
+id="khohang"
+class="section"
+style="display:none;">
+
+<div class="box">
+
+<h2>QUẢN LÝ KHO HÀNG</h2>
+
+<div class="form-inline">
+
+<input
+type="text"
+id="newCode"
+placeholder="Mã sản phẩm">
+
+<input
+type="text"
+id="newName"
+placeholder="Tên sản phẩm">
+
+<input
+type="number"
+id="newPrice"
+placeholder="Đơn giá">
+
+<button onclick="addProduct()">
+
+Thêm sản phẩm
+
+</button>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Mã</th>
+
+<th>Tên sản phẩm</th>
+
+<th>Giá</th>
+
+<th>Thao tác</th>
+
+</tr>
+
+</thead>
+
+<tbody id="productTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ================= QUẢN LÝ NHÂN VIÊN ================= -->
+
+<div
+id="nhanvien"
+class="section"
+style="display:none;">
+
+<div class="box">
+
+<h2>DANH SÁCH NHÂN VIÊN</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Mã NV</th>
+
+<th>Họ tên</th>
+
+<th>SĐT</th>
+
+<th>Giờ làm</th>
+
+<th>Thao tác</th>
+
+</tr>
+
+</thead>
+
+<tbody id="staffTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ================= THỐNG KÊ ================= -->
+
+<div
+id="thongke"
+class="section"
+style="display:none;">
+
+<div class="dashboard">
+
+<div class="card">
+
+<h3>Tổng sản phẩm</h3>
+
+<h1 id="tkProduct">
+
+0
+
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Nhân viên</h3>
+
+<h1 id="tkStaff">
+
+0
+
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Doanh thu</h3>
+
+<h1 id="tkMoney">
+
+0 VNĐ
+
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Sản phẩm đã bán</h3>
+
+<h1 id="tkSold">
+
+0
+
+</h1>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="box">
+
+<h2>Hoạt động hệ thống</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Thời gian</th>
+
+<th>Nhân viên</th>
+
+<th>Hoạt động</th>
+
+</tr>
+
+</thead>
+
+<tbody id="historyTable">
+
+<tr>
+
+<td colspan="3">
+
+Chưa có dữ liệu
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<p>
+
+© 2025
+
+SIÊU THỊ THƯƠNG MẠI
+1 THÀNH VIÊN
+VĂN THẮNG
+
+</p>
+
+</footer>
+
+</div>
+
 <script src="https://unpkg.com/@zxing/library@latest"></script>
+
 <script src="script.js"></script>
 
 </body>
