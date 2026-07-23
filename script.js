@@ -51,7 +51,7 @@ let invoices = JSON.parse(localStorage.getItem("invoices")) || [];
             LOAD TRANG
 ====================================================*/
 
-window.onload = function(){
+window.onload = function () {
 
     renderProducts();
 
@@ -61,13 +61,13 @@ window.onload = function(){
 
     let user = JSON.parse(localStorage.getItem("user"));
 
-    if(user){
+    if (user) {
 
         showLogin();
 
-        loginName.value=user.name;
+        loginName.value = user.name;
 
-        loginId.value=user.id;
+        loginId.value = user.id;
 
     }
 
@@ -78,33 +78,33 @@ window.onload = function(){
         CHUYỂN TRANG
 ====================================================*/
 
-function showLogin(){
+function showLogin() {
 
-    registerPage.style.display="none";
+    registerPage.style.display = "none";
 
-    loginPage.style.display="block";
-
-}
-
-function showRegister(){
-
-    registerPage.style.display="block";
-
-    loginPage.style.display="none";
+    loginPage.style.display = "block";
 
 }
 
-function showSection(id){
+function showRegister() {
 
-    let sections=document.querySelectorAll(".section");
+    registerPage.style.display = "block";
 
-    sections.forEach(function(item){
+    loginPage.style.display = "none";
 
-        item.style.display="none";
+}
+
+function showSection(id) {
+
+    let sections = document.querySelectorAll(".section");
+
+    sections.forEach(function (item) {
+
+        item.style.display = "none";
 
     });
 
-    document.getElementById(id).style.display="block";
+    document.getElementById(id).style.display = "block";
 
 }
 
@@ -113,17 +113,82 @@ function showSection(id){
         ĐĂNG KÝ
 ====================================================*/
 
-function register(){
+function register() {
 
-    let code=inviteCode.value.trim();
+    let code = inviteCode.value.trim();
 
-    let name=regName.value.trim();
+    let name = regName.value.trim();
 
-    let phone=regPhone.value.trim();
+    let phone =
+        document.getElementById("regPhone")
+            .value.trim();
 
-    let birth=regBirth.value;
+    let password = document.getElementById("regPassword").value.trim();
 
-    if(code==""||name==""||phone==""||birth==""){
+    staffs = JSON.parse(localStorage.getItem("staffs")) || [];
+
+    // Không được để trống
+    if (phone == "") {
+
+        alert("Vui lòng nhập số điện thoại!");
+
+        return;
+    }
+
+    // Chỉ được nhập số
+    if (!/^[0-9]+$/.test(phone)) {
+
+        alert("Số điện thoại chỉ được nhập số!");
+
+        return;
+    }
+
+    // Phải đủ đúng 10 số
+    if (phone.length != 10) {
+
+        alert("Số điện thoại phải có đúng 10 số!");
+
+        return;
+    }
+
+    // Phải bắt đầu bằng số 0
+    if (!phone.startsWith("0")) {
+
+        alert("Số điện thoại phải bắt đầu bằng số 0!");
+
+        return;
+    }
+
+    let existingStaff = staffs.find(function (item) {
+
+        return item.phone === phone;
+
+    });
+
+    if (existingStaff) {
+
+        alert("Số điện thoại này đã được đăng ký trước đó.\nMã nhân viên: " + existingStaff.id);
+
+        document.getElementById("loginName").value = existingStaff.name;
+
+        document.getElementById("loginId").value = existingStaff.id;
+
+        showLogin();
+
+        return;
+
+    }
+
+    if (password == "") {
+
+        alert("Vui lòng nhập mật khẩu!");
+
+        return;
+    }
+
+    let birth = regBirth.value;
+
+    if (code == "" || name == "" || phone == "" || password == "" || birth == "") {
 
         alert("Vui lòng nhập đầy đủ thông tin.");
 
@@ -131,7 +196,7 @@ function register(){
 
     }
 
-    if(!validCodes.includes(code)){
+    if (!validCodes.includes(code)) {
 
         alert("Mã đăng ký không hợp lệ.");
 
@@ -139,35 +204,55 @@ function register(){
 
     }
 
-    let id="NV"+Math.floor(Math.random()*9000+1000);
+    let id = "NV" + Math.floor(Math.random() * 9000 + 1000);
 
-    let staff={
+    let existingId = staffs.find(function (item) {
 
-        id:id,
+        return item.id === id;
 
-        name:name,
+    });
 
-        phone:phone,
+    while (existingId) {
 
-        birth:birth,
+        id = "NV" + Math.floor(Math.random() * 9000 + 1000);
 
-        hours:0
+        existingId = staffs.find(function (item) {
+
+            return item.id === id;
+
+        });
+
+    }
+
+    let staff = {
+
+        id: id,
+
+        name: name,
+
+        phone: phone,
+
+        password: password,
+
+        birth: birth,
+
+        hours: 0
 
     };
 
     staffs.push(staff);
 
-    localStorage.setItem("staffs",JSON.stringify(staffs));
+    localStorage.setItem("staffs", JSON.stringify(staffs));
 
-    localStorage.setItem("user",JSON.stringify({
+    localStorage.setItem("user", JSON.stringify({
 
-        id:id,
+        id: id,
 
-        name:name
+        name: name
 
     }));
 
-    alert("Đăng ký thành công\nMã nhân viên: "+id);
+    alert("Đăng ký thành công\nMã nhân viên: " + id);
 
     renderStaff();
 
@@ -180,25 +265,27 @@ function register(){
         ĐĂNG NHẬP
 ====================================================*/
 
-function login(){
+function login() {
 
-    let name=loginName.value.trim();
+    let name = loginName.value.trim();
 
-    let id=loginId.value.trim();
+    let id = loginId.value.trim();
 
-    let user=staffs.find(function(item){
+    let password = loginPassword.value.trim();
 
-        return item.name===name && item.id===id;
+    let user = staffs.find(function (item) {
+
+        return item.name === name && item.id === id;
 
     });
 
-    if(user){
+    if (user && user.password === password) {
 
-        loginPage.style.display="none";
+        loginPage.style.display = "none";
 
-        mainApp.style.display="block";
+        mainApp.style.display = "block";
 
-        staff.innerHTML="Nhân viên : "+user.name+" | "+user.id;
+        staff.innerHTML = "Nhân viên : " + user.name + " | " + user.id;
 
         startCamera();
 
@@ -206,9 +293,9 @@ function login(){
 
     }
 
-    else{
+    else {
 
-        alert("Sai thông tin đăng nhập.");
+        alert("Sai thông tin đăng nhập hoặc mật khẩu.");
 
     }
 
@@ -219,17 +306,17 @@ function login(){
         ĐĂNG XUẤT
 ====================================================*/
 
-function logout(){
+function logout() {
 
-    if(confirm("Bạn muốn đăng xuất ?")){
+    if (confirm("Bạn muốn đăng xuất ?")) {
 
-        mainApp.style.display="none";
+        mainApp.style.display = "none";
 
-        loginPage.style.display="block";
+        loginPage.style.display = "block";
 
-        barcode.value="";
+        barcode.value = "";
 
-        cart=[];
+        cart = [];
 
         renderBill();
 
@@ -240,7 +327,7 @@ function logout(){
             CAMERA
 ====================================================*/
 
-function startCamera(){
+function startCamera() {
 
     const codeReader = new ZXing.BrowserBarcodeReader();
 
@@ -248,43 +335,43 @@ function startCamera(){
 
     codeReader.getVideoInputDevices()
 
-    .then(devices=>{
+        .then(devices => {
 
-        if(devices.length==0){
+            if (devices.length == 0) {
 
-            alert("Không tìm thấy camera.");
+                alert("Không tìm thấy camera.");
 
-            return;
-
-        }
-
-        codeReader.decodeFromVideoDevice(
-
-            devices[0].deviceId,
-
-            video,
-
-            (result)=>{
-
-                if(result){
-
-                    barcode.value=result.text;
-
-                    scanProduct();
-
-                }
+                return;
 
             }
 
-        );
+            codeReader.decodeFromVideoDevice(
 
-    })
+                devices[0].deviceId,
 
-    .catch(err=>{
+                video,
 
-        console.log(err);
+                (result) => {
 
-    });
+                    if (result) {
+
+                        barcode.value = result.text;
+
+                        scanProduct();
+
+                    }
+
+                }
+
+            );
+
+        })
+
+        .catch(err => {
+
+            console.log(err);
+
+        });
 
 }
 
@@ -292,11 +379,11 @@ function startCamera(){
             QUÉT MÃ
 ====================================================*/
 
-function scanProduct(){
+function scanProduct() {
 
-    let code=barcode.value.trim();
+    let code = barcode.value.trim();
 
-    if(code==""){
+    if (code == "") {
 
         alert("Nhập mã sản phẩm.");
 
@@ -304,7 +391,7 @@ function scanProduct(){
 
     }
 
-    if(products[code]==undefined){
+    if (products[code] == undefined) {
 
         alert("Không tìm thấy sản phẩm.");
 
@@ -312,7 +399,7 @@ function scanProduct(){
 
     }
 
-    if(products[code].quantity<=0){
+    if (products[code].quantity <= 0) {
 
         alert("Sản phẩm đã hết.");
 
@@ -320,25 +407,25 @@ function scanProduct(){
 
     }
 
-    let found=cart.find(item=>item.code==code);
+    let found = cart.find(item => item.code == code);
 
-    if(found){
+    if (found) {
 
         found.qty++;
 
     }
 
-    else{
+    else {
 
         cart.push({
 
-            code:code,
+            code: code,
 
-            name:products[code].name,
+            name: products[code].name,
 
-            price:products[code].price,
+            price: products[code].price,
 
-            qty:1
+            qty: 1
 
         });
 
@@ -346,13 +433,13 @@ function scanProduct(){
 
     products[code].quantity--;
 
-    localStorage.setItem("products",JSON.stringify(products));
+    localStorage.setItem("products", JSON.stringify(products));
 
     renderProducts();
 
     renderBill();
 
-    barcode.value="";
+    barcode.value = "";
 
 }
 
@@ -360,33 +447,33 @@ function scanProduct(){
             TÌM KIẾM
 ====================================================*/
 
-function searchProduct(){
+function searchProduct() {
 
-    let keyword=search.value.toLowerCase();
+    let keyword = search.value.toLowerCase();
 
-    let result=document.getElementById("searchResult");
+    let result = document.getElementById("searchResult");
 
-    result.innerHTML="";
+    result.innerHTML = "";
 
-    if(keyword==""){
+    if (keyword == "") {
 
-        result.innerHTML="Nhập tên sản phẩm.";
+        result.innerHTML = "Nhập tên sản phẩm.";
 
         return;
 
     }
 
-    for(let code in products){
+    for (let code in products) {
 
-        let p=products[code];
+        let p = products[code];
 
-        if(
+        if (
 
             p.name.toLowerCase().includes(keyword)
 
-        ){
+        ) {
 
-            result.innerHTML+=`
+            result.innerHTML += `
 
             <div class="result">
 
@@ -414,21 +501,21 @@ function searchProduct(){
             HÓA ĐƠN
 ====================================================*/
 
-function renderBill(){
+function renderBill() {
 
-    let tbody=document.querySelector("#bill tbody");
+    let tbody = document.querySelector("#bill tbody");
 
-    tbody.innerHTML="";
+    tbody.innerHTML = "";
 
-    let total=0;
+    let total = 0;
 
-    cart.forEach(function(item,index){
+    cart.forEach(function (item, index) {
 
-        let money=item.price*item.qty;
+        let money = item.price * item.qty;
 
-        total+=money;
+        total += money;
 
-        tbody.innerHTML+=`
+        tbody.innerHTML += `
 
         <tr>
 
@@ -464,15 +551,15 @@ function renderBill(){
 
     });
 
-    total.innerHTML="";
+    total.innerHTML = "";
 
-    document.getElementById("total").innerHTML=
+    document.getElementById("total").innerHTML =
 
-    "Tổng tiền : <b>"+
+        "Tổng tiền : <b>" +
 
-    total.toLocaleString()
+        total.toLocaleString()
 
-    +" VNĐ</b>";
+        + " VNĐ</b>";
 
 }
 
@@ -480,11 +567,11 @@ function renderBill(){
         TĂNG SỐ LƯỢNG
 ====================================================*/
 
-function plusQty(index){
+function plusQty(index) {
 
-    let code=cart[index].code;
+    let code = cart[index].code;
 
-    if(products[code].quantity<=0){
+    if (products[code].quantity <= 0) {
 
         alert("Hết hàng.");
 
@@ -496,7 +583,7 @@ function plusQty(index){
 
     products[code].quantity--;
 
-    localStorage.setItem("products",JSON.stringify(products));
+    localStorage.setItem("products", JSON.stringify(products));
 
     renderProducts();
 
@@ -508,19 +595,19 @@ function plusQty(index){
         GIẢM SỐ LƯỢNG
 ====================================================*/
 
-function minusQty(index){
+function minusQty(index) {
 
     cart[index].qty--;
 
     products[cart[index].code].quantity++;
 
-    if(cart[index].qty<=0){
+    if (cart[index].qty <= 0) {
 
-        cart.splice(index,1);
+        cart.splice(index, 1);
 
     }
 
-    localStorage.setItem("products",JSON.stringify(products));
+    localStorage.setItem("products", JSON.stringify(products));
 
     renderProducts();
 
@@ -532,15 +619,15 @@ function minusQty(index){
         XÓA SẢN PHẨM
 ====================================================*/
 
-function deleteItem(index){
+function deleteItem(index) {
 
-    let code=cart[index].code;
+    let code = cart[index].code;
 
-    products[code].quantity+=cart[index].qty;
+    products[code].quantity += cart[index].qty;
 
-    cart.splice(index,1);
+    cart.splice(index, 1);
 
-    localStorage.setItem("products",JSON.stringify(products));
+    localStorage.setItem("products", JSON.stringify(products));
 
     renderProducts();
 
@@ -548,13 +635,35 @@ function deleteItem(index){
 
 }
 
+function closeQrModal() {
+
+    document.getElementById("qrModal").style.display = "none";
+
+}
+
+function showQrModal(total) {
+
+    let qrBox = document.getElementById("qrCodeBox");
+
+    qrBox.innerHTML = `
+
+        <img src="QR.jpg" alt="QR thanh toán" style="width:220px;height:220px;object-fit:contain;border:1px solid #ddd;border-radius:12px;padding:8px;background:#fff;">
+
+        <p style="margin-top:10px;font-weight:bold;">Tổng: ` + total.toLocaleString() + ` VNĐ</p>
+
+    `;
+
+    document.getElementById("qrModal").style.display = "flex";
+
+}
+
 /*====================================================
             THANH TOÁN
 ====================================================*/
 
-function pay(){
+function pay() {
 
-    if(cart.length==0){
+    if (cart.length == 0) {
 
         alert("Chưa có sản phẩm.");
 
@@ -562,25 +671,25 @@ function pay(){
 
     }
 
-    let total=0;
+    let total = 0;
 
-    cart.forEach(function(item){
+    cart.forEach(function (item) {
 
-        total+=item.price*item.qty;
+        total += item.price * item.qty;
 
     });
 
-    revenue+=total;
+    revenue += total;
 
-    localStorage.setItem("revenue",revenue);
+    localStorage.setItem("revenue", revenue);
 
     invoices.push({
 
-        date:new Date().toLocaleString(),
+        date: new Date().toLocaleString(),
 
-        total:total,
+        total: total,
 
-        items:cart
+        items: cart
 
     });
 
@@ -592,19 +701,9 @@ function pay(){
 
     );
 
-    alert(
+    showQrModal(total);
 
-        "Thanh toán thành công.\n\n"
-
-        +"Tổng tiền : "
-
-        +total.toLocaleString()
-
-        +" VNĐ"
-
-    );
-
-    cart=[];
+    cart = [];
 
     renderBill();
 
@@ -615,15 +714,15 @@ function pay(){
             QUẢN LÝ KHO HÀNG
 ====================================================*/
 
-function addProduct(){
+function addProduct() {
 
-    let code=document.getElementById("newCode").value.trim();
+    let code = document.getElementById("newCode").value.trim();
 
-    let name=document.getElementById("newName").value.trim();
+    let name = document.getElementById("newName").value.trim();
 
-    let price=Number(document.getElementById("newPrice").value);
+    let price = Number(document.getElementById("newPrice").value);
 
-    if(code==""||name==""||price<=0){
+    if (code == "" || name == "" || price <= 0) {
 
         alert("Vui lòng nhập đầy đủ thông tin!");
 
@@ -631,7 +730,7 @@ function addProduct(){
 
     }
 
-    if(products[code]){
+    if (products[code]) {
 
         alert("Mã sản phẩm đã tồn tại!");
 
@@ -639,13 +738,13 @@ function addProduct(){
 
     }
 
-    products[code]={
+    products[code] = {
 
-        name:name,
+        name: name,
 
-        price:price,
+        price: price,
 
-        quantity:100
+        quantity: 100
 
     };
 
@@ -659,9 +758,9 @@ function addProduct(){
 
     renderProducts();
 
-    newCode.value="";
-    newName.value="";
-    newPrice.value="";
+    newCode.value = "";
+    newName.value = "";
+    newPrice.value = "";
 
     alert("Đã thêm sản phẩm!");
 
@@ -669,9 +768,9 @@ function addProduct(){
 
 /*==========================================*/
 
-function deleteProduct(code){
+function deleteProduct(code) {
 
-    if(confirm("Bạn có chắc muốn xóa sản phẩm?")){
+    if (confirm("Bạn có chắc muốn xóa sản phẩm?")) {
 
         delete products[code];
 
@@ -691,9 +790,9 @@ function deleteProduct(code){
 
 /*==========================================*/
 
-function editProduct(code){
+function editProduct(code) {
 
-    let name=prompt(
+    let name = prompt(
 
         "Tên mới",
 
@@ -701,7 +800,7 @@ function editProduct(code){
 
     );
 
-    let price=prompt(
+    let price = prompt(
 
         "Giá mới",
 
@@ -709,7 +808,7 @@ function editProduct(code){
 
     );
 
-    let quantity=prompt(
+    let quantity = prompt(
 
         "Số lượng",
 
@@ -717,13 +816,13 @@ function editProduct(code){
 
     );
 
-    if(name==null) return;
+    if (name == null) return;
 
-    products[code].name=name;
+    products[code].name = name;
 
-    products[code].price=Number(price);
+    products[code].price = Number(price);
 
-    products[code].quantity=Number(quantity);
+    products[code].quantity = Number(quantity);
 
     localStorage.setItem(
 
@@ -739,15 +838,15 @@ function editProduct(code){
 
 /*==========================================*/
 
-function renderProducts(){
+function renderProducts() {
 
-    let table=document.getElementById("productTable");
+    let table = document.getElementById("productTable");
 
-    table.innerHTML="";
+    table.innerHTML = "";
 
-    for(let code in products){
+    for (let code in products) {
 
-        table.innerHTML+=`
+        table.innerHTML += `
 
         <tr>
 
@@ -788,15 +887,15 @@ function renderProducts(){
         QUẢN LÝ NHÂN VIÊN
 ====================================================*/
 
-function renderStaff(){
+function renderStaff() {
 
-    let table=document.getElementById("staffTable");
+    let table = document.getElementById("staffTable");
 
-    table.innerHTML="";
+    table.innerHTML = "";
 
-    staffs.forEach(function(item,index){
+    staffs.forEach(function (item, index) {
 
-        table.innerHTML+=`
+        table.innerHTML += `
 
         <tr>
 
@@ -836,9 +935,9 @@ function renderStaff(){
 
 /*==========================================*/
 
-function editStaff(index){
+function editStaff(index) {
 
-    let name=prompt(
+    let name = prompt(
 
         "Tên nhân viên",
 
@@ -846,7 +945,7 @@ function editStaff(index){
 
     );
 
-    let phone=prompt(
+    let phone = prompt(
 
         "Số điện thoại",
 
@@ -854,11 +953,11 @@ function editStaff(index){
 
     );
 
-    if(name==null) return;
+    if (name == null) return;
 
-    staffs[index].name=name;
+    staffs[index].name = name;
 
-    staffs[index].phone=phone;
+    staffs[index].phone = phone;
 
     localStorage.setItem(
 
@@ -874,11 +973,11 @@ function editStaff(index){
 
 /*==========================================*/
 
-function deleteStaff(index){
+function deleteStaff(index) {
 
-    if(confirm("Xóa nhân viên này?")){
+    if (confirm("Xóa nhân viên này?")) {
 
-        staffs.splice(index,1);
+        staffs.splice(index, 1);
 
         localStorage.setItem(
 
@@ -899,37 +998,37 @@ function deleteStaff(index){
             DASHBOARD
 ====================================================*/
 
-function updateDashboard(){
+function updateDashboard() {
 
-    let productCount=0;
+    let productCount = 0;
 
-    for(let code in products){
+    for (let code in products) {
 
         productCount++;
 
     }
 
-    let staffCount=staffs.length;
+    let staffCount = staffs.length;
 
-    let billCount=invoices.length;
+    let billCount = invoices.length;
 
-    if(document.getElementById("totalProduct"))
+    if (document.getElementById("totalProduct"))
 
-        totalProduct.innerHTML=productCount;
+        totalProduct.innerHTML = productCount;
 
-    if(document.getElementById("totalStaff"))
+    if (document.getElementById("totalStaff"))
 
-        totalStaff.innerHTML=staffCount;
+        totalStaff.innerHTML = staffCount;
 
-    if(document.getElementById("totalRevenue"))
+    if (document.getElementById("totalRevenue"))
 
-        totalRevenue.innerHTML=
+        totalRevenue.innerHTML =
 
-        revenue.toLocaleString()+" VNĐ";
+            revenue.toLocaleString() + " VNĐ";
 
-    if(document.getElementById("totalBill"))
+    if (document.getElementById("totalBill"))
 
-        totalBill.innerHTML=billCount;
+        totalBill.innerHTML = billCount;
 
 }
 
@@ -938,14 +1037,14 @@ function updateDashboard(){
             ĐỒNG HỒ
 ====================================================*/
 
-setInterval(function(){
+setInterval(function () {
 
-    if(document.getElementById("time")){
+    if (document.getElementById("time")) {
 
-        document.getElementById("time").innerHTML=
+        document.getElementById("time").innerHTML =
 
-        new Date().toLocaleString();
+            new Date().toLocaleString();
 
     }
 
-},1000);
+}, 1000);
